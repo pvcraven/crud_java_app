@@ -25,6 +25,6 @@ public class Person {
     public void setEmail(String email) { this.email = email; }
 
     public String getBirthday() { return birthday; }
-    public void setBirthday(String first) { this.birthday = birthday; }
+    public void setBirthday(String birthday) { this.birthday = birthday; }
 
 }
