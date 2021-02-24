@@ -17,7 +17,7 @@ public class NameListGetServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.log(Level.FINE, "Get people servlet");
+        log.log(Level.INFO, "Get people servlet");
 
         // Type of output (HTML, JSON, image, whatever
         response.setContentType("application/json");

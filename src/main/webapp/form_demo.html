@@ -17,12 +17,15 @@
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css">
 
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.6/dropzone.css"
+          crossorigin="anonymous" />
     <title>Form Demo</title>
 
     <style>
         form {
             /* This adds some space under each form, for visual separation. */
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
     </style>
 </head>
@@ -58,14 +61,29 @@
     <p>There are a lot of ways to submit a form.</p>
 
     <p><b>Method 1:</b></p>
-    <p>Classic form submission using "get" method</p>
+    <p>Classic form submission using "get" method.</p>
     <form action="api/form_test_servlet" method="get">
-        <input name="fieldname" type="text" />
+        <!-- A label isn't necessary for this to work, but it allows vision-impaired people
+             and even computers to get what a field is. Otherwise it is just an empty box.
+             Get in the habit to add these to all forms, so you can get more customers. -->
+        <label for="inputField1a">Input field:</label>
+        <input name="fieldname" type="text" id="inputField1a" />
         <input type="submit">
     </form>
 
+
+    <p><b>Method 1, fancied up with Bootstrap:</b></p>
+    <p>Classic form submission using "get" method.</p>
+    <form action="api/form_test_servlet" method="get">
+        <div class="form-group col-md-4">
+            <label for="inputField1b">Input field:</label>
+            <input name="fieldname" type="text" class="form-control" id="inputField1b" />
+        </div>
+        <input class="btn btn-primary" type="submit" value="Go!">
+    </form>
+
     <p><b>Method 2:</b></p>
-    <p>Form submission using "get" method as a link</p>
+    <p>Form submission using "get" method as a link.</p>
     <form action="api/form_test_servlet" method="get">
         <ul>
             <li><a href="api/form_test_servlet?fieldname=a">Field a</a></li>
@@ -74,14 +92,14 @@
     </form>
 
     <p><b>Method 3:</b></p>
-    <p>Classic form submission using "post" method</p>
+    <p>Classic form submission using "post" method.</p>
     <form action="api/form_test_servlet" method="post">
         <input name="fieldname" type="text" />
         <input type="submit">
     </form>
 
     <p><b>Method 4:</b></p>
-    <p>JavaScript/AJAX/jQuery form submission using "get" method</p>
+    <p>JavaScript/AJAX/jQuery form submission using "get" method.</p>
     <p>Check JavaScript console for the result.</p>
     <form action="javascript:void(0);">
         <input id="jqueryGetField" name="fieldname" type="text" />
@@ -89,7 +107,7 @@
     </form>
 
     <p><b>Method 5:</b></p>
-    <p>JavaScript/AJAX/jQuery form submission using "post" method</p>
+    <p>JavaScript/AJAX/jQuery form submission using "post" method.</p>
     <p>Check JavaScript console for the result.</p>
     <form action="javascript:void(0);">
         <input id="jqueryPostField" name="fieldname" type="text" />
@@ -97,7 +115,7 @@
     </form>
 
     <p><b>Method 6:</b></p>
-    <p>JavaScript/AJAX/jQuery/GSON form submission by posting parameterless JSON data</p>
+    <p>JavaScript/AJAX/jQuery/JSON-Binding form submission by posting parameterless JSON data.</p>
     <form action="javascript:void(0);">
         <input id="jqueryPostJSONField" name="fieldname" type="text" />
         <button id="jqueryPostJSONButton">Submit</button>
@@ -114,14 +132,14 @@
     </form>
 
     <h3>File Upload</h3>
-    <p>File Upload - Old Style</p>
+    <p><b>File Upload - Old Style</b></p>
     <form action="api/form_test_file_servlet" method="post" enctype="multipart/form-data">
         <input type="text" name="description" placeholder = "File description"/>
         <input type="file" name="file">
         <input type="submit">
     </form>
 
-    <p>File Upload - Drag and Drop</p>
+    <p><b>File Upload - Drag and Drop</b></p>
     <form action="api/form_test_file_servlet"
           class="dropzone"
           id="myDropzone">
@@ -140,7 +158,6 @@
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.6/min/dropzone.min.js"
-        integrity="sha512-KgeSi6qqjyihUcmxFn9Cwf8dehAB8FFZyl+2ijFEPyWu4ZM8ZOQ80c2so59rIdkkgsVsuTnlffjfgkiwDThewQ=="
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="js/form_demo.js"></script>
 </body>

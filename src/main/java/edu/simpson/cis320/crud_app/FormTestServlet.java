@@ -1,4 +1,4 @@
-package edu.simpson.cis320;
+package edu.simpson.cis320.crud_app;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
