@@ -60,8 +60,57 @@ function updateTable() {
         }
         console.log("Done");
     });
-
 }
 
 // Call your code.
 updateTable();
+
+// Called when "Add Item" button is clicked
+function showDialogAdd() {
+
+    // Print that we got here
+    console.log("Opening add item dialog");
+
+    // Clear out the values in the form.
+    // Otherwise we'll keep values from when we last
+    // opened or hit edit.
+    // I'm getting it started, you can finish.
+    $('#id').val("");
+    $('#firstName').val("");
+
+    // Show the hidden dialog
+    $('#myModal').modal('show');
+}
+
+// There's a button in the form with the ID "addItem"
+// Associate the function showDialogAdd with it.
+let addItemButton = $('#addItem');
+addItemButton.on("click", showDialogAdd);
+
+// Called when "Save changes" button is clicked
+function saveChanges() {
+    // Print that we got here
+    console.log("Save Changes test!!");
+
+    // Get the field
+    let v1 = $('#firstName').val();
+
+    // Create the regular expression
+    let reg = /^[A-Za-z]{1,10}$/;
+
+    // Test the regular expression to see if there is a match
+    if (reg.test(v1)) {
+        console.log("Ok first name");
+        // Set style for outline of form field
+        $('#firstName').removeClass("is-invalid");
+        $('#firstName').addClass("is-valid");
+    } else {
+        console.log("Bad first name");
+        // Set style for outline of form field
+        $('#firstName').removeClass("is-valid");
+        $('#firstName').addClass("is-invalid");
+    }
+}
+
+let saveChangesButton = $('#saveChanges');
+saveChangesButton.on("click", saveChanges);
