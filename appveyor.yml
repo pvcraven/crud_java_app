@@ -1,0 +1,19 @@
+version: "{branch} {build}"
+
+build:
+  verbosity: detailed
+
+build_script:
+  - ./gradlew build --scan -s
+
+branches:
+  only:
+    - main
+
+cache:
+  - C:\Users\appveyor\.gradle
+
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+
