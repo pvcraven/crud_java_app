@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@WebServlet(name = "NameListGetServlet", value = "/api/form_test_json_servlet")
+@WebServlet(name = "FormTestJSONServlet", value = "/api/form_test_json_servlet")
 public class FormTestJSONServlet extends HttpServlet {
     private final static Logger log = Logger.getLogger(FormTestJSONServlet.class.getName());
 
