@@ -4,7 +4,7 @@ build:
   verbosity: detailed
 
 build_script:
-  - ./gradlew build --scan -s
+  - ./gradlew build
 
 branches:
   only:
@@ -16,4 +16,8 @@ cache:
 environment:
   matrix:
     - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+
+artifacts:
+  - path: build/libs/*.war
+    name: MyWarFile
 
