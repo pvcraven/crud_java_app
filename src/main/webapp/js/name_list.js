@@ -60,22 +60,26 @@ function updateTable() {
         }
         console.log("Done");
     });
-
 }
 
 // Call your code.
 updateTable();
 
-
+// Called when "Add Item" button is clicked
 function showDialogAdd() {
-    console.log("ADD ITEM");
 
-    // Show the hidden dialog
-    $('#myModal').modal('show');
+    // Print that we got here
+    console.log("Opening add item dialog");
 
+    // Clear out the values in the form.
+    // Otherwise we'll keep values from when we last
+    // opened or hit edit.
+    // I'm getting it started, you can finish.
     $('#id').val("");
     $('#firstName').val("");
 
+    // Show the hidden dialog
+    $('#myModal').modal('show');
 }
 
 // There's a button in the form with the ID "addItem"
@@ -83,26 +87,80 @@ function showDialogAdd() {
 let addItemButton = $('#addItem');
 addItemButton.on("click", showDialogAdd);
 
-function saveChanges() {
-    console.log("Save changes");
-    let firstName = $('#firstName').val();
-    console.log("First name: " + firstName);
+function fieldValidate(field, regex) {
+    // Get the field
+    let v1 = field.val();
 
     // Create the regular expression
-    let reg = /^[A-Za-z]{1,10}$/;
+    let reg = regex;
 
     // Test the regular expression to see if there is a match
-    if (reg.test(firstName)) {
-        $('#firstName').removeClass("is-invalid");
-        $('#firstName').addClass("is-valid");
+    if (reg.test(v1)) {
+        // Set style for outline of form field
+        field.removeClass("is-invalid");
+        field.addClass("is-valid");
+        return true;
     } else {
-        $('#firstName').removeClass("is-valid");
-        $('#firstName').addClass("is-invalid");
+        // Set style for outline of form field
+        field.removeClass("is-valid");
+        field.addClass("is-invalid");
+        return false;
     }
 }
-// There's a button in the form with the ID "addItem"
-// Associate the function showDialogAdd with it.
+
+// Called when "Save changes" button is clicked
+function saveChanges() {
+    // Print that we got here
+    console.log("Save Changes start");
+
+    let success = true;
+    let valid;
+
+    let firstNameField = $('#firstName')
+    valid = fieldValidate(firstNameField, /^[^0-9]{1,10}$/);
+    if (!valid) success = false;
+
+    let lastNameField = $('#lastName');
+    fieldValidate(lastNameField, /^[^0-9]{1,10}$/);
+    if (!valid) success = false;
+
+    let emailField = $('#email');
+    fieldValidate(emailField, /^.+@.+$/);
+    if (!valid) success = false;
+
+    let phoneField = $('#phone');
+    fieldValidate(phoneField, /^\d{3}-\d{3}-\d{4}$/);
+    if (!valid) success = false;
+
+    let birthdayField = $('#birthday');
+    fieldValidate(birthdayField, /^\d{4}-\d{2}-\d{2}$/);
+    if (!valid) success = false;
+
+    if (success) {
+        console.log("Valid form!");
+        let url = "api/form_test_json_servlet";
+        let dataToServer = { first : firstNameField.val(),
+                             last : lastNameField.val(),
+                             email : emailField.val(),
+                             phone : phoneField.val(),
+                             birthday : birthdayField.val(),
+        };
+
+        url = "api/name_list_edit";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(dataToServer),
+            success: function(dataFromServer) {
+                console.log(dataFromServer);
+                $('#myModal').modal('hide');
+                updateTable();
+            },
+            contentType: "application/json",
+            dataType: 'text' // Could be JSON or whatever too
+        });
+    }
+}
+
 let saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", saveChanges);
-
-

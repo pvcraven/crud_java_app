@@ -1,0 +1,25 @@
+# Auto-pull the branch and label to use as the version
+version: "{branch} {build}"
+
+# How detailed do we want the build record to be
+build:
+  verbosity: detailed
+
+# Command to build the project
+build_script:
+  - ./gradlew build
+
+# Cache holds files used to speed up later builds so we don't have to
+# re-download them.
+cache:
+  - .gradle
+
+# What JAVA to build with
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+
+# What/where is the resulting WAR file
+artifacts:
+  - path: build/libs/*.war
+    name: MyWarFile

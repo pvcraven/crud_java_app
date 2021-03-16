@@ -20,7 +20,7 @@ public class PersonDAO {
      * @return Returns a list of instances of the People class.
      */
     public static List<Person> getPeople() {
-        log.log(Level.FINE, "Get people");
+        log.log(Level.INFO, "Get people");
 
         // Create an empty linked list to put the people we get from the
         // database into.
@@ -90,6 +90,66 @@ public class PersonDAO {
         }
         // Done! Return the results
         return list;
+    }
+
+    /**
+     * Get a list of the people in the database.
+     * @return Returns a list of instances of the People class.
+     */
+    public static void addPerson(Person person) {
+        log.log(Level.INFO, "Add person");
+
+        // Declare our variables
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        // Databases are unreliable. Use some exception handling
+        try {
+            // Get our database connection
+            conn = DBHelper.getConnection();
+
+            // This is a string that is our SQL query.
+            // Update for all our fields
+
+            String sql = "insert into person (first, last, email, phone, birthday) values (?, ?, ?, ?, ?)";
+
+
+            // If you had parameters, it would look something like
+            // String sql = "select id, first, last, phone from person where id = ?";
+
+            // Create an object with all the info about our SQL statement to run.
+            stmt = conn.prepareStatement(sql);
+
+            // If you had parameters, they would be set wit something like:
+            stmt.setString(1, person.getFirst());
+            stmt.setString(2, person.getLast());
+            stmt.setString(3, person.getEmail());
+            stmt.setString(4, person.getPhone());
+            stmt.setString(5, person.getBirthday());
+
+            // Execute the SQL and get the results
+            stmt.executeUpdate();
+
+            log.log(Level.INFO, "Done running update");
+
+        } catch (SQLException se) {
+            log.log(Level.SEVERE, "SQL Error", se );
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Error", e );
+        } finally {
+            // Ok, close our result set, statement, and connection
+            try { if (rs != null) rs.close(); }
+            catch (Exception e) { log.log(Level.SEVERE, "Error", e ); }
+
+            try { if(stmt != null) stmt.close(); }
+            catch (Exception e) { log.log(Level.SEVERE, "Error", e ); }
+
+            try { if(conn != null) conn.close(); }
+            catch (Exception e) { log.log(Level.SEVERE, "Error", e ); }
+        }
+        log.log(Level.INFO, "Done");
+
     }
 
 }

@@ -7,17 +7,19 @@ package edu.simpson.cis320.crud_app;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@WebServlet(name = "FormTestJSONServlet", value = "/api/form_test_json_servlet")
-public class FormTestJSONServlet extends HttpServlet {
-    private final static Logger log = Logger.getLogger(FormTestJSONServlet.class.getName());
+@WebServlet(name = "NameListEditServlet", value = "/api/name_list_edit")
+public class NameListEditServlet extends HttpServlet {
+    private final static Logger log = Logger.getLogger(NameListEditServlet.class.getName());
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -39,14 +41,17 @@ public class FormTestJSONServlet extends HttpServlet {
         // Great! Now we want to parse the object, and pop it into our business object. Field
         // names have to match. That's the magic.
         Jsonb jsonb = JsonbBuilder.create();
-        FormTestObject formTestObject = jsonb.fromJson(requestString, FormTestObject.class);
+        Person person = jsonb.fromJson(requestString, Person.class);
 
         // Log info as a check
-        log.log(Level.INFO, "Object test: "+formTestObject.fieldname);
+        log.log(Level.INFO, "Object test 2: "+person.getFirst());
 
         // Send something back to the client. Really, we should send a JSON, but
         // we'll keep things simple.
-        out.println("Object test: "+formTestObject.fieldname);
+        out.println("Object test 2: "+person.getFirst());
+        PersonDAO.addPerson(person);
+        log.log(Level.INFO, "Done adding person");
+
     }
 
 }

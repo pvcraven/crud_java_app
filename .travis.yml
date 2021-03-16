@@ -1,0 +1,13 @@
+language: java
+install: skip
+
+os: linux
+dist: trusty
+jdk: oraclejdk8
+
+script:
+  - ./gradlew build
+
+artifacts:
+  - path: build/libs/*.war
+    name: MyWarFile
