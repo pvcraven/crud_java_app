@@ -1,5 +1,6 @@
 /* Method 4: Use an AJAX Get */
 function jqueryGetButtonAction() {
+    console.log("Hi");
 
     // URL where our servlet is at
     let url = "api/form_test_servlet";
@@ -15,7 +16,6 @@ function jqueryGetButtonAction() {
         console.log(dataFromServer);
     });
 }
-
 // Hook the function above to the 'submit' button for the Method 4 form
 let jqueryGetButton = $('#jqueryGetButton');
 jqueryGetButton.on("click", jqueryGetButtonAction);
@@ -27,7 +27,9 @@ function jqueryPostButtonAction() {
     let myFieldValue = $("#jqueryPostField").val();
     let dataToServer = { fieldname : myFieldValue };
 
+
     $.post(url, dataToServer, function (dataFromServer) {
+
         console.log("Finished calling servlet.");
         console.log(dataFromServer);
     });
@@ -35,12 +37,13 @@ function jqueryPostButtonAction() {
 let jqueryPostButton = $('#jqueryPostButton');
 jqueryPostButton.on("click", jqueryPostButtonAction);
 
-/* Method 6: AJAX Post using JSON data */
+
+<!-- AJAX Post using JSON data -->
 function jqueryPostJSONButtonAction() {
 
-    let url = "api/form_test_json_servlet";
-    let myFieldValue = $("#jqueryPostJSONField").val();
-    let dataToServer = { fieldname : myFieldValue };
+    var url = "api/form_test_json_servlet";
+    var myFieldValue = $("#jqueryPostJSONField").val();
+    var dataToServer = { fieldname : myFieldValue };
 
     $.ajax({
         type: 'POST',
@@ -53,13 +56,6 @@ function jqueryPostJSONButtonAction() {
         dataType: 'text' // Could be JSON or whatever too
     });
 }
-let jqueryPostJSONButton = $('#jqueryPostJSONButton');
+var jqueryPostJSONButton = $('#jqueryPostJSONButton');
 jqueryPostJSONButton.on("click", jqueryPostJSONButtonAction);
 
-Dropzone.options.myDropzone = {
-    init: function() {
-        this.on("success", function(file, response) {
-            console.log(response);
-        });
-    }
-};

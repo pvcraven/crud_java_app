@@ -10,7 +10,7 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "FormTestServlet", value = "/api/form_test_file_servlet")
+@WebServlet(name = "FormTestFileServlet", value = "/api/form_test_file_servlet")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 5 * 5)

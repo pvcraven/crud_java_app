@@ -65,3 +65,44 @@ function updateTable() {
 
 // Call your code.
 updateTable();
+
+
+function showDialogAdd() {
+    console.log("ADD ITEM");
+
+    // Show the hidden dialog
+    $('#myModal').modal('show');
+
+    $('#id').val("");
+    $('#firstName').val("");
+
+}
+
+// There's a button in the form with the ID "addItem"
+// Associate the function showDialogAdd with it.
+let addItemButton = $('#addItem');
+addItemButton.on("click", showDialogAdd);
+
+function saveChanges() {
+    console.log("Save changes");
+    let firstName = $('#firstName').val();
+    console.log("First name: " + firstName);
+
+    // Create the regular expression
+    let reg = /^[A-Za-z]{1,10}$/;
+
+    // Test the regular expression to see if there is a match
+    if (reg.test(firstName)) {
+        $('#firstName').removeClass("is-invalid");
+        $('#firstName').addClass("is-valid");
+    } else {
+        $('#firstName').removeClass("is-valid");
+        $('#firstName').addClass("is-invalid");
+    }
+}
+// There's a button in the form with the ID "addItem"
+// Associate the function showDialogAdd with it.
+let saveChangesButton = $('#saveChanges');
+saveChangesButton.on("click", saveChanges);
+
+
