@@ -42,8 +42,8 @@ function updateTable() {
             // Print the first name
             console.log(json_result[i].first, json_result[i].last);
 
-            bday = getDateFromSQL(json_result[i].birthday);
-            bdayString = bday.toLocaleDateString();
+            let bday = getDateFromSQL(json_result[i].birthday);
+            let bdayString = bday.toLocaleDateString();
             console.log(bday);
 
             $('#datatable tbody').append('<tr><td>'
@@ -56,8 +56,11 @@ function updateTable() {
                 +formatPhoneNumber(htmlSafe(json_result[i].phone))
                 +'</td><td>'
                 +htmlSafe(bdayString)
+                +'</td><td>'
+                +"<button type='button' name='delete' class='deleteButton btn btn-danger' value='" + json_result[i].id + "'>Delete</button></td>"
                 +'</td></tr>');
         }
+        $(".deleteButton").on("click", deleteItem);
         console.log("Done");
     });
 }
@@ -89,13 +92,10 @@ addItemButton.on("click", showDialogAdd);
 
 function fieldValidate(field, regex) {
     // Get the field
-    let v1 = field.val();
-
-    // Create the regular expression
-    let reg = regex;
+    let field_value = field.val();
 
     // Test the regular expression to see if there is a match
-    if (reg.test(v1)) {
+    if (regex.test(field_value)) {
         // Set style for outline of form field
         field.removeClass("is-invalid");
         field.addClass("is-valid");
@@ -114,31 +114,30 @@ function saveChanges() {
     console.log("Save Changes start");
 
     let success = true;
-    let valid;
+    let valid = true;
 
-    let firstNameField = $('#firstName')
+    let firstNameField = $('#firstName');
     valid = fieldValidate(firstNameField, /^[^0-9]{1,10}$/);
     if (!valid) success = false;
 
     let lastNameField = $('#lastName');
-    fieldValidate(lastNameField, /^[^0-9]{1,10}$/);
+    valid = fieldValidate(lastNameField, /^[^0-9]{1,10}$/);
     if (!valid) success = false;
 
     let emailField = $('#email');
-    fieldValidate(emailField, /^.+@.+$/);
+    valid = fieldValidate(emailField, /^.+@.+$/);
     if (!valid) success = false;
 
     let phoneField = $('#phone');
-    fieldValidate(phoneField, /^\d{3}-\d{3}-\d{4}$/);
+    valid = fieldValidate(phoneField, /^\d{3}-\d{3}-\d{4}$/);
     if (!valid) success = false;
 
     let birthdayField = $('#birthday');
-    fieldValidate(birthdayField, /^\d{4}-\d{2}-\d{2}$/);
+    valid = fieldValidate(birthdayField, /^\d{4}-\d{2}-\d{2}$/);
     if (!valid) success = false;
 
     if (success) {
         console.log("Valid form!");
-        let url = "api/form_test_json_servlet";
         let dataToServer = { first : firstNameField.val(),
                              last : lastNameField.val(),
                              email : emailField.val(),
@@ -146,21 +145,57 @@ function saveChanges() {
                              birthday : birthdayField.val(),
         };
 
-        url = "api/name_list_edit";
+        let url = "api/name_list_edit";
         $.ajax({
             type: 'POST',
             url: url,
             data: JSON.stringify(dataToServer),
             success: function(dataFromServer) {
+                console.log("Done with insert");
                 console.log(dataFromServer);
-                $('#myModal').modal('hide');
-                updateTable();
+
+                let result = JSON.parse(dataFromServer);
+                if ('error' in result) {
+                    alert(result.error);
+                } else {
+                    $('#myModal').modal('hide');
+                    updateTable();
+                }
             },
             contentType: "application/json",
-            dataType: 'text' // Could be JSON or whatever too
+            dataType: 'text'
         });
     }
 }
 
 let saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", saveChanges);
+
+
+function deleteItem(e) {
+    console.log("Delete");
+    console.log(e.target.value);
+
+    let dataToServer = { id : e.target.value };
+
+    let url = "api/name_list_delete";
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(dataToServer),
+        success: function(dataFromServer) {
+            console.log("Done with delete");
+            console.log(dataFromServer);
+
+            let result = JSON.parse(dataFromServer);
+            if ('error' in result) {
+                alert(result.error);
+            } else {
+                $('#myModal').modal('hide');
+                updateTable();
+            }
+        },
+        contentType: "application/json",
+        dataType: 'text'
+    });
+}

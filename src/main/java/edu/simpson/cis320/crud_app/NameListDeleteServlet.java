@@ -19,18 +19,18 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@WebServlet(name = "NameListEditServlet", value = "/api/name_list_edit")
-public class NameListEditServlet extends HttpServlet {
-    private final static Logger log = Logger.getLogger(NameListEditServlet.class.getName());
+@WebServlet(name = "NameListDeleteServlet", value = "/api/name_list_delete")
+public class NameListDeleteServlet extends HttpServlet {
+    private final static Logger log = Logger.getLogger(NameListDeleteServlet.class.getName());
     private Pattern nameValidationPattern;
 
-    public NameListEditServlet() {
+    public NameListDeleteServlet() {
         nameValidationPattern = Pattern.compile("^[A-Za-z]{1,10}$");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        log.log(Level.INFO, "doPost for NameListEditServlet");
+        log.log(Level.INFO, "doPost for NameListDeleteServlet");
 
         // You can output in any format, text/JSON, text/HTML, etc. We'll keep it simple
         response.setContentType("application/json");
@@ -51,19 +51,15 @@ public class NameListEditServlet extends HttpServlet {
         Person person = jsonb.fromJson(requestString, Person.class);
 
         // Log info as a check
-        log.log(Level.INFO, "Object test 2: " + person.getFirst());
+        log.log(Level.INFO, "Object test 2: " + person.getId());
 
-        Matcher m = nameValidationPattern.matcher(person.getFirst());
-        if (!m.find()) {
-            out.println("{\"error\" : \"Error validating first name.\"}");
-            return;
-        }
+
+        PersonDAO.deletePerson(person);
 
         // Send something back to the client. Really, we should send a JSON, but
         // we'll keep things simple.
         out.println("{\"success\": \"Successful insert.\"}");
 
-        PersonDAO.addPerson(person);
         log.log(Level.INFO, "Done adding person");
 
     }
