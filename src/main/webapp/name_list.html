@@ -17,6 +17,16 @@
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css">
 
+    <style>
+        .container{
+            position: relative;
+        }
+        .toast {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+    </style>
     <title>Name List Page</title>
 </head>
 
@@ -48,6 +58,17 @@
 <!-- Our main page -->
 <div class="container">
 
+    <div class="toast" id="myToast">
+        <div class="toast-header">
+            <strong class="mr-auto"><i class="fa fa-grav"></i> Action</strong>
+            <small>Now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+        </div>
+        <div class="toast-body" id="toast-body">
+            Record Inserted
+        </div>
+    </div>
+
     <!-- Table title -->
     <h1>Name List</h1>
 
@@ -74,6 +95,9 @@
         </tr>
         </tbody>
     </table>
+
+
+
 </div>
 
 <!-- This is a hidden "pop up" window that we'll use to enter new data -->

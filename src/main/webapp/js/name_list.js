@@ -20,8 +20,7 @@ function formatPhoneNumber(phoneNumberString) {
 function getDateFromSQL(sqlDate) {
     let cleaned = sqlDate.replace(/\D/g, '');
     let match = cleaned.match(/^(\d{4})(\d{2})(\d{2})$/);
-    let resultDate = new Date(match[1], match[2], match[3]);
-    return resultDate;
+    return new Date(match[1], match[2], match[3]);
 }
 
 function updateTable() {
@@ -57,10 +56,12 @@ function updateTable() {
                 +'</td><td>'
                 +htmlSafe(bdayString)
                 +'</td><td>'
-                +"<button type='button' name='delete' class='deleteButton btn btn-danger' value='" + json_result[i].id + "'>Delete</button></td>"
+                +"<button type='button' name='edit' class='editButton btn btn-primary' value='" + json_result[i].id + "'>Edit</button>"
+                +"&nbsp;<button type='button' name='delete' class='deleteButton btn btn-danger' value='" + json_result[i].id + "'>Delete</button>"
                 +'</td></tr>');
         }
         $(".deleteButton").on("click", deleteItem);
+        $(".editButton").on("click", editItem);
         console.log("Done");
     });
 }
@@ -80,10 +81,35 @@ function showDialogAdd() {
     // I'm getting it started, you can finish.
     $('#id').val("");
     $('#firstName').val("");
+    $('#lastName').val("");
+    $('#phone').val("");
+    $('#email').val("");
+    $('#birthday').val("");
 
     // Show the hidden dialog
     $('#myModal').modal('show');
 }
+
+// When the modal is fully shown
+$('#myModal').on('shown.bs.modal', function () {
+    // Move focus to first field
+    $('#firstName').focus();
+});
+
+// Fire an even with keydown
+$(document).keydown(function(e){
+    // Log the key
+    console.log(e.keyCode);
+    // If key is an 'a' and dialog not shown, pop it up
+    if(e.keyCode == 65 && !$('#myModal').is(':visible')) {
+        showDialogAdd();
+    }
+    // If key is an enter key and dialog is shown, save changes
+    if(e.keyCode == 13 && $('#myModal').is(':visible')) {
+        saveChanges();
+    }
+
+});
 
 // There's a button in the form with the ID "addItem"
 // Associate the function showDialogAdd with it.
@@ -116,12 +142,24 @@ function saveChanges() {
     let success = true;
     let valid = true;
 
+    // Get the field
     let firstNameField = $('#firstName');
+    // Run the validate function to see if this field is legit
+    // Also sets field styles
     valid = fieldValidate(firstNameField, /^[^0-9]{1,10}$/);
-    if (!valid) success = false;
+    // If it isn't value, and we haven't yet had a field that has
+    // been invalid, then set the focus here.
+    if (!valid && success) {
+        firstNameField.focus();
+    }
+    // Not valid field, say that form isn't going to work
+    if (!valid) {
+        success = false;
+    }
 
     let lastNameField = $('#lastName');
     valid = fieldValidate(lastNameField, /^[^0-9]{1,10}$/);
+    if (!valid && success) lastNameField.focus();
     if (!valid) success = false;
 
     let emailField = $('#email');
@@ -157,9 +195,18 @@ function saveChanges() {
                 let result = JSON.parse(dataFromServer);
                 if ('error' in result) {
                     alert(result.error);
+
+                    $("#toast-body").html("Error: Record not inserted");
+                    $('#myToast').toast({delay: 5000});
+                    $('#myToast').toast('show');
+
                 } else {
                     $('#myModal').modal('hide');
                     updateTable();
+
+                    $("#toast-body").html("Record inserted");
+                    $('#myToast').toast({delay: 5000});
+                    $('#myToast').toast('show');
                 }
             },
             contentType: "application/json",
@@ -198,4 +245,62 @@ function deleteItem(e) {
         contentType: "application/json",
         dataType: 'text'
     });
+}
+
+function editItem(e) {
+    console.debug("Edit");
+    console.debug(e.target.value);
+
+    // Grab the id from the event
+    let id = e.target.value;
+
+    // This next line is fun.
+    // "e" is the event of the mouse click
+    // "e.target" is what the user clicked on. The button in this case.
+    // "e.target.parentNode" is the node that holds the button. In this case, the table cell.
+    // "e.target.parentNode.parentNode" is the parent of the table cell. In this case, the table row.
+    // "e.target.parentNode.parentNode.querySelectorAll("td")" gets an array of all matching table cells in the row
+    // "e.target.parentNode.parentNode.querySelectorAll("td")[0]" is the first cell. (You can grab cells 0, 1, 2, etc.)
+    // "e.target.parentNode.parentNode.querySelectorAll("td")[0].innerHTML" is content of that cell. Like "Sam" for example.
+    // How did I find this long chain? Just by setting a breakpoint and using the interactive shell in my browser.
+    let first = e.target.parentNode.parentNode.querySelectorAll("td")[0].innerHTML;
+    let last = e.target.parentNode.parentNode.querySelectorAll("td")[1].innerHTML;
+    let email = e.target.parentNode.parentNode.querySelectorAll("td")[2].innerHTML;
+    let phone = e.target.parentNode.parentNode.querySelectorAll("td")[3].innerHTML;
+    let birthday = e.target.parentNode.parentNode.querySelectorAll("td")[4].innerHTML;
+    // repeat line above for all the fields we need
+
+    $('#id').val(id); // Yes, now we set and use the hidden ID field
+    $('#firstName').val(first);
+    $('#lastName').val(last);
+    $('#email').val(email);
+
+    // Regular expression to match phone number pattern:
+    // (515) 555-1212
+    let regexp = /\((\d{3})\) (\d{3})-(\d{4})/;
+    let match = phone.match(regexp);
+    // Log what we matched
+    console.log("Matches:");
+    console.log(match);
+    // Reformat into 515-555-1212
+    let phoneString = match[1] + "-" + match[2] + "-" + match[3];
+    $('#phone').val(phoneString);
+
+    // Parse date to current time in milliseconds
+    let timestamp = Date.parse(birthday);
+    // Made date object out of that time
+    let dateObject = new Date(timestamp);
+    // Convert to a full ISO formatted string
+    let fullDateString = dateObject.toISOString();
+    console.log(fullDateString);
+    // Trim off the time part
+    let shortDateString = fullDateString.split('T')[0];
+
+    $('#birthday').val(shortDateString);
+
+    // Etc
+
+    // Show the window
+    $('#myModal').modal('show');
+
 }
